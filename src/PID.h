@@ -1,6 +1,9 @@
 #ifndef PID_H
 #define PID_H
 
+#include <chrono>
+
+
 class PID {
 public:
   /*
@@ -12,6 +15,9 @@ public:
 
   double error_sum;
   double error_last;
+
+  std::chrono::high_resolution_clock::time_point last_time;
+  
 
   /*
   * Coefficients
