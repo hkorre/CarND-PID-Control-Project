@@ -4,9 +4,9 @@
 #include "PID.h"
 #include <math.h>
 
-#define PID_KP          (0.1)  //(0.1)
-#define PID_KI          (0.05)  //(0.0)
-#define PID_KD          (0.1)  //(0.1)
+#define PID_KP          (0.1) 
+#define PID_KI          (0.05)
+#define PID_KD          (0.1)
 #define STEERING_COEFF  (-1)
 #define STEER_VAL_MAX   (1)
 #define STEER_VAL_MIN   (-1)
