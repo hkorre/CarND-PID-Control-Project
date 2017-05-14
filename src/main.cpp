@@ -4,6 +4,13 @@
 #include "PID.h"
 #include <math.h>
 
+#define PID_KP          (0.1)  //(0.1)
+#define PID_KI          (0.05)  //(0.0)
+#define PID_KD          (0.1)  //(0.1)
+#define STEERING_COEFF  (-1)
+#define STEER_VAL_MAX   (1)
+#define STEER_VAL_MIN   (-1)
+
 // for convenience
 using json = nlohmann::json;
 
@@ -35,9 +42,9 @@ int main()
   PID pid;
 
   // TODO: Initialize the pid variable.
-  double Kp = 0.25;
-  double Ki = 0;
-  double Kd = 1.5;
+  double Kp = PID_KP;
+  double Ki = PID_KI;
+  double Kd = PID_KD;
   pid.Init(Kp, Ki, Kd);
 
 
@@ -67,14 +74,14 @@ int main()
           */
           pid.UpdateError(cte);
 
-          double steering_coeff = -1;
+          double steering_coeff = STEERING_COEFF;
           steer_value = steering_coeff * pid.TotalError();
 
-          if (steer_value > 1) {
-            steer_value = 1;
+          if (steer_value > STEER_VAL_MAX) {
+            steer_value = STEER_VAL_MAX;
           }
-          if (steer_value < -1) {
-            steer_value = -1;
+          if (steer_value < STEER_VAL_MIN) {
+            steer_value = STEER_VAL_MIN;
           }
           
           // DEBUG

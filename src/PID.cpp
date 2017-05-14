@@ -4,7 +4,9 @@
 //#include <time.h>       // time_t, struct tm, difftime, time, mktime
 #include <chrono>
 
-#define LOOP_TIME_MS  (100)
+#define LOOP_TIME_MS    (100)
+#define MS_TO_SEC       (0.001)
+#define ERROR_SUM_MAX   (5)
 
 
 using namespace std;
@@ -38,24 +40,32 @@ void PID::UpdateError(double cte_) {
   std::chrono::high_resolution_clock::time_point now;
   now = std::chrono::high_resolution_clock::now();
   std::chrono::duration<double, std::milli> timeDiff_ms = now - last_time;
-  //std::cout << "timeDiff_ms = " << timeDiff_ms.count() << std::endl;
 
   if (timeDiff_ms.count() > LOOP_TIME_MS) {
-    std::cout << "Update!" << std::endl;
+    double timeDiff_sec = static_cast<double>(timeDiff_ms.count())*MS_TO_SEC;
 
     // P error...
     p_error = Kp * cte_;
 
     // I error...
     error_sum += cte_;
-    i_error = Ki * error_sum;
+    if (error_sum > ERROR_SUM_MAX) {
+      error_sum = ERROR_SUM_MAX;
+    }
+    if (error_sum < (-1)*ERROR_SUM_MAX) {
+      error_sum = ERROR_SUM_MAX;
+    }
+    i_error = Ki * error_sum*timeDiff_sec;
 
     // D error...
-    double error_diff = cte_ - error_last;
+    double error_deriv = (cte_ - error_last) / timeDiff_sec;
     error_last = cte_;
-    d_error = Kd  * error_diff;
+    d_error = Kd  * error_deriv;
 
     last_time = now;
+
+    //std::cout << "P: " << p_error << "  I: " << i_error << "  D: " << d_error << std::endl;
+    //std::cout << std::endl;
   }
 }
 
